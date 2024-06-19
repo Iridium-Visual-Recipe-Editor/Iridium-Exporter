@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "iridium_exporter",
+  "version": "${version}",
+  "name": "Iridium Exporter",
+  "description": "This mod exports files that the program Iridium uses.",
+  "authors": [
+    "xEobard_Thawne"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/iridium_exporter/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "xeobardthawne.iridiumexporter.fabric.IridiumExporterFabric"
+    ],
+    "client": [
+      "xeobardthawne.iridiumexporter.fabric.client.IridiumExporterFabricClient"
+    ]
+  },
+  "mixins": [
+    "iridium_exporter.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "architectury": ">=9.2.14",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
