@@ -4,17 +4,13 @@ import dev.architectury.registry.registries.Registrar;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.ScreenshotRecorder;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -22,8 +18,6 @@ import org.joml.Matrix4f;
 import xeobardthawne.iridiumexporter.utils.ItemDataUtils;
 import xeobardthawne.iridiumexporter.utils.TextUtils;
 
-import java.awt.*;
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -61,19 +55,38 @@ public class ItemScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        final int imagescale = 64;
+
+        // Someone suggested using a Framebuffer to render items instead. I honestly couldn't for the life of me
+        // figure out how they work, but if you know how (and are willing to teach me) feel free to let me know
+        // and I could probably come up with something.
+
+//        Window mcWindow = MinecraftClient.getInstance().getWindow();
+//        int spacing = (int) Math.ceil(64 / mcWindow.getScaleFactor());
+//        int screenamount = mcWindow.getScaledWidth();
+//        while (screenamount > spacing) {
+//            renderAndCreateItemImage(64, context, mcWindow.getScaledWidth() - screenamount, 0);
+//            screenamount -= spacing;
+//        }
+
+
+        renderAndCreateItemImage(64, context, 0, 0);
+    }
+
+    private void renderAndCreateItemImage(final int imagescale, DrawContext context, int x, int y) {
+        if (ListIndex + 1 > itemList.size()) {
+            return;
+        }
         TextUtils.overlayText(String.valueOf((ListIndex + 1)) + "/" + itemList.size());
         Identifier identifier = itemList.get(ListIndex);
         ItemStack itemStack = new ItemStack(itemRegistrar.get(identifier));
         double guiscale = MinecraftClient.getInstance().getWindow().getScaleFactor();
         float scaleModified = (float) (imagescale / guiscale);
         int scaleModifiedRounded = (int) Math.ceil(scaleModified);
-        context.fill(0, 0, scaleModifiedRounded, scaleModifiedRounded, BACKGROUND_COLOR);
-        drawItem(context, itemStack, 0, 0, scaleModified);
-        takeItemScreenshot(identifier, imagescale);
+        context.fill(x, y, x + scaleModifiedRounded, y + scaleModifiedRounded, BACKGROUND_COLOR);
+        drawItem(context, itemStack, (float) (x / (4 / guiscale)), (float) (y / (4 / guiscale)), scaleModified);
+        takeItemScreenshot(identifier, imagescale, (int) (x * guiscale), (int) (y * guiscale));
         ListIndex++;
         if (ListIndex + 1 > itemList.size()) {
-            //ListIndex = 0;
             this.close();
             TextUtils.easyClientMessage("Finished Generating Images.", true);
         }
@@ -87,12 +100,12 @@ public class ItemScreen extends Screen {
     /**
      * Modified version of DrawContext.drawItem()
      */
-    private void drawItem(DrawContext drawContext, ItemStack stack, int x, int y, float scaleModified) {
+    private void drawItem(DrawContext drawContext, ItemStack stack, float x, float y, float scaleModified) {
         if (!stack.isEmpty()) {
             BakedModel bakedModel = MinecraftClient.getInstance().getItemRenderer().getModel(stack, null, null, 1);
             drawContext.getMatrices().push();
             drawContext.getMatrices().scale(scaleModified / 16, scaleModified / 16, 1);
-            drawContext.getMatrices().translate((float)(x + 8), (float)(y + 8), 100.0F);
+            drawContext.getMatrices().translate((float)(x + 8), (float)(y + 8), 150.0F);
             drawContext.getMatrices().multiplyPositionMatrix((new Matrix4f()).scaling(1.0F, -1.0F, 1.0F));
             drawContext.getMatrices().scale(16.0F, 16.0F, 16.0F);
             boolean bl = !bakedModel.isSideLit();
@@ -110,9 +123,9 @@ public class ItemScreen extends Screen {
         }
     }
 
-    private void takeItemScreenshot(Identifier identifier, int imageScale) {
+    private void takeItemScreenshot(Identifier identifier, int imageScale, int x, int y) {
         NativeImage imageFull = ScreenshotRecorder.takeScreenshot(MinecraftClient.getInstance().getFramebuffer());
-        NativeImage image = getSubImage(imageFull, imageScale, imageScale);
+        NativeImage image = getSubImage(imageFull, imageScale, imageScale, x, y);
         imageFull.close();
 
         for (int ix = 0; ix < image.getWidth(); ix++) {
@@ -146,17 +159,16 @@ public class ItemScreen extends Screen {
      * @param height Height to resize to
      * @return Resized Image
      */
-    public static NativeImage getSubImage(NativeImage imageFull, int width, int height) {
+    public static NativeImage getSubImage(NativeImage imageFull, int width, int height, int x, int y) {
         NativeImage imageNew = new NativeImage(width, height, false);
 
         for (int ix = 0; ix < width; ix++) {
             for (int iy = 0; iy < height; iy++) {
-                int color = imageFull.getColor(ix, iy);
+                int color = imageFull.getColor(ix + x, iy + y);
 
                 imageNew.setColor(ix, iy, color);
             }
         }
-        //imageFull.resizeSubRectTo(0, 0, width, height, imageNew);
         return imageNew;
     }
 }
