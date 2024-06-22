@@ -35,10 +35,6 @@ public class ImageExportUtils {
         Registrar<Item> items = MANAGER.get().get(Registries.ITEM);
         TextUtils.easyClientMessage("Generating Image Files...", true);
         TextUtils.easyClientMessage("Press escape if you wish to stop generating images.", true);
-        System.out.println(MinecraftClient.getInstance().currentScreen.getTitle());
         openItemScreen(items, imageDirectory);
-//        MinecraftClient.getInstance().setScreen(null);
-//        ItemScreen itemScreen = new ItemScreen(items, imageDirectory);
-//        MinecraftClient.getInstance().setScreen(itemScreen);
     }
 }
