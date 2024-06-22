@@ -13,3 +13,6 @@ Use the command `/iridium exporter` and one of its three parameters:
 *   `itemimages`: Only generates the item images.
 
 All data generated will be put inside the Minecraft directory under the folder "exporteddata".
+
+### Credits
+I'd like to thank the mods [IconExporter](https://www.curseforge.com/minecraft/mc-mods/iconexporter) and [TellMe](https://www.curseforge.com/minecraft/mc-mods/tellme) for taking a fair amount of inspiration from their code.
