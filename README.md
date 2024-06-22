@@ -1,5 +1,9 @@
 # Iridium
 
+
+## Iridium Itself
+Also linked under this organization, can be found here: https://github.com/Iridium-Visual-Recipe-Editor/Iridium
+
 ## This Mod - The Exporter
 
 This mod acts as a data collector for the upcoming program Iridium. It will collect item data and item images from in your game to use with Iridium.
@@ -16,6 +20,3 @@ All data generated will be put inside the Minecraft directory under the folder "
 
 ### Credits
 I'd like to thank the mods [IconExporter](https://www.curseforge.com/minecraft/mc-mods/iconexporter) and [TellMe](https://www.curseforge.com/minecraft/mc-mods/tellme) for taking a fair amount of inspiration from their code.
-
-## Iridium Itself
-Also linked under this organization, can be found here: https://github.com/Iridium-Visual-Recipe-Editor/Iridium
